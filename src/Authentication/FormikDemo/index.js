@@ -1,9 +1,12 @@
 import { Button, TextField } from "@mui/material";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
+import { signUpSchema } from "../../Schema";
+import { Visibility } from "@mui/icons-material";
 
 const FormikDemo = () => {
-  const { handleSubmit, handleChange, values } = useFormik({
+  const [visibility, setVisibility] = useState(false);
+  const { handleSubmit, handleChange, values, errors, isValid } = useFormik({
     initialValues: {
       name: "",
       email: "",
@@ -11,10 +14,29 @@ const FormikDemo = () => {
       password: "",
       confirm_password: "",
     },
+    validationSchema: signUpSchema,
     onSubmit: () => {
       console.log(values, "values");
     },
   });
+  console.log(errors, "errors", isValid, "isValid");
+  // const {
+  //   handleSubmit: handleSubmit2,
+  //   handleChange: handleChange2,
+  //   values: values2,
+  // } = useFormik({
+  //   initialValues: {
+  //     name: "",
+  //   },
+  //   onSubmit: () => {
+  //     console.log(values2, "values");
+  //   },
+  // });
+
+  const functionPasssword = () => {
+    // visibility ? setVisibility(false) : setVisibility(true);
+    setVisibility(!visibility);
+  };
   return (
     <div>
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-5">
@@ -24,13 +46,16 @@ const FormikDemo = () => {
           type="text"
           value={values.name}
           onChange={(event) => handleChange(event)}
+          helperText={errors.name}
         />
 
         <TextField
           id="email"
-          type="email"
+          type="text"
           value={values.email}
           onChange={handleChange}
+          FormHelperTextProps={{ className: "!text-red-500" }}
+          helperText={errors.email}
         />
 
         <TextField
@@ -38,25 +63,44 @@ const FormikDemo = () => {
           type="number"
           value={values.phone}
           onChange={handleChange}
+          helperText={errors.phone}
         />
 
         <TextField
           id="password"
-          type="password"
+          type={visibility ? "text" : "password"}
           value={values.password}
           onChange={handleChange}
+          helperText={errors.password}
         />
+        <Visibility onClick={functionPasssword} />
         <TextField
           id="confirm_password"
-          type="confirm_password"
+          type="password"
           value={values.confirm_password}
           onChange={handleChange}
+          helperText={errors.confirm_password}
         />
 
-        <Button type="submit" variant="contained" color="success">
+        <Button
+          disabled={!isValid}
+          type="submit"
+          variant="contained"
+          color="success"
+        >
           Submit
         </Button>
       </form>
+
+      {/* <form onSubmit={handleSubmit2}>
+        <input
+          id="name"
+          type="text"
+          value={values2.name}
+          onChange={handleChange2}
+        />
+        <button type="submit">Submit</button>
+      </form> */}
     </div>
   );
 };
